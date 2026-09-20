@@ -34,7 +34,7 @@
 }
 .custom .trigger, .custom .triggers::before, .custom .triggers::after {
   position: absolute;
-  background-image: url(triggers.svg);
+  background-image: url(triggers.svg?v=2);
   background-repeat: no-repeat;
   background-size: 27.923010vw 26.379214vw;
   width: 12.4615vw;
