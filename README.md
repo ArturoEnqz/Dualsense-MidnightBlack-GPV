@@ -56,3 +56,27 @@ Sony describe Midnight Black como *“two subtly different shades of black with 
 ## Licencia
 
 Los SVG derivados siguen **MPL-2.0** (ver `skin/LICENSE.md`). El resto del repo de preview puede usarse libremente.
+
+
+## GitHub Pages
+
+1. En el repo: **Settings → Pages → Source**: Deploy from branch `main`, folder `/ (root)`.
+2. Tras el deploy, la skin queda en:
+
+```
+https://arturoenqz.github.io/Dualsense-MidnightBlack-GPV/public/skin/style.css
+```
+
+o, si prefieres una URL más corta, también está en:
+
+```
+https://arturoenqz.github.io/Dualsense-MidnightBlack-GPV/skin/style.css
+```
+
+3. Gamepad Viewer:
+
+```
+https://gamepadviewer.com/?p=1&css=https://arturoenqz.github.io/Dualsense-MidnightBlack-GPV/skin/style.css
+```
+
+Preview del overlay: `.../public/skin/preview.html` o `.../skin/` según cómo configures Pages.
