@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Midnight Black DualSense — skin preview</title>
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: transparent;
+        overflow: hidden;
+      }
+      body {
+        width: 100vw;
+        height: 79.206476vw; /* matches shell aspect */
+      }
+      .controller.custom {
+        /* style.css already sets size via backgrounds */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controller custom" id="pad">
+      <div class="triggers">
+        <div class="trigger left" data-btn="6"></div>
+        <div class="trigger right" data-btn="7"></div>
+      </div>
+      <div class="bumpers">
+        <div class="bumper left" data-btn="4"></div>
+        <div class="bumper right" data-btn="5"></div>
+      </div>
+      <div class="touchpad" data-btn="17"></div>
+      <div class="quadrant p0"></div>
+      <div class="arrows">
+        <div class="back" data-btn="8"></div>
+        <div class="start" data-btn="9"></div>
+      </div>
+      <div class="abxy">
+        <div class="button a" data-btn="0"></div>
+        <div class="button b" data-btn="1"></div>
+        <div class="button x" data-btn="2"></div>
+        <div class="button y" data-btn="3"></div>
+      </div>
+      <div class="dpad">
+        <div class="face up" data-btn="12"></div>
+        <div class="face down" data-btn="13"></div>
+        <div class="face left" data-btn="14"></div>
+        <div class="face right" data-btn="15"></div>
+      </div>
+      <div class="meta" data-btn="16"></div>
+      <div class="sticks">
+        <div class="stick left" data-btn="10" data-axes="0,1"></div>
+        <div class="stick right" data-btn="11" data-axes="2,3"></div>
+      </div>
+    </div>
+    <script>
+      const pad = document.getElementById("pad");
+      const buttons = [...pad.querySelectorAll("[data-btn]")];
+
+      function setPressed(el, on) {
+        el.classList.toggle("pressed", on);
+      }
+
+      // Demo pulse so the skin looks alive without a gamepad
+      const demoSeq = [
+        ["0"],
+        ["1"],
+        ["2"],
+        ["3"],
+        ["12"],
+        ["15"],
+        ["13"],
+        ["14"],
+        ["4", "5"],
+        ["6"],
+        ["7"],
+        ["10"],
+        ["11"],
+        ["17"],
+        ["16"],
+      ];
+      let demo = true;
+      let step = 0;
+
+      setInterval(() => {
+        if (!demo) return;
+        buttons.forEach((b) => setPressed(b, false));
+        const group = demoSeq[step % demoSeq.length];
+        group.forEach((id) => {
+          const el = pad.querySelector(`[data-btn="${id}"]`);
+          if (el) setPressed(el, true);
+        });
+        step++;
+      }, 450);
+
+      function tick() {
+        const gp = navigator.getGamepads?.()[0];
+        if (gp) {
+          demo = false;
+          buttons.forEach((el) => {
+            const idx = Number(el.dataset.btn);
+            const btn = gp.buttons[idx];
+            setPressed(el, !!(btn && (btn.pressed || btn.value > 0.15)));
+            if (el.dataset.axes) {
+              const [ax, ay] = el.dataset.axes.split(",").map(Number);
+              const x = gp.axes[ax] || 0;
+              const y = gp.axes[ay] || 0;
+              el.style.transform = `translate(${x * 12}px, ${y * 12}px)`;
+            }
+          });
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      window.addEventListener("gamepadconnected", () => {
+        demo = false;
+      });
+
+      // Allow parent to force-press buttons for UI chips
+      window.addEventListener("message", (e) => {
+        if (!e.data || e.data.type !== "press") return;
+        demo = false;
+        buttons.forEach((b) => setPressed(b, false));
+        (e.data.ids || []).forEach((id) => {
+          const el = pad.querySelector(`[data-btn="${id}"]`);
+          if (el) setPressed(el, true);
+        });
+      });
+    </script>
+  </body>
+</html>
